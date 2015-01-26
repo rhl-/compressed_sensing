@@ -1,5 +1,6 @@
 # compressed_sensing
 project post-course
 
-# Interesting link for solver
+# Interesting links for solver
 http://sdpa.sourceforge.net/index.html
+http://www.pnas.org/content/110/4/1181.short
