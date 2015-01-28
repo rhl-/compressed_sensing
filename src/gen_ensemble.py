@@ -4,6 +4,7 @@
 
 import common
 import numpy as np
+import cmath
 
 def matrix_sample(m, n, meas, mat):
 	# Input:
@@ -29,21 +30,36 @@ def matrix_sample(m, n, meas, mat):
 		return A
 
 	def make_PERM():
+		# Each matrix is a random permutation scaled by 1/sqrt(n)
 		A = np.zeros((m,n**2))
 		for i in xrange(m):
 			permi = np.random.permutation(n)
 			Ai = np.zeros((n,n))
 			for (j,k) in enumerate(permi):
-				Ai[j,k] = 1.0 / sqrt(n)
+				Ai[j,k] = 1.0 / np.sqrt(n)
 			A[i,:] = Ai.flatten()
 		return A
 
 	def make_RSPERM():
-		return 2
+		# Add a sign to the permutation
+		A = make_PERM()
+		A[np.where(np.random.rand(m,n**2) > 0.5)] *= -1.0
+		return A
+
 	def make_CSPERM():
-		return 3
+		# Modulate with a complex phase
+		B = make_RSPERM()
+		A = np.zeros((m,n**2),dtype=complex)
+		A += B
+		A[np.where(np.random.rand(m,n**2) > 0.5)] *= 1.0j
+		return A
+
 	def make_RGPERM():
-		return 4
+		# Modulate with a Gaussian
+		A = make_RSPERM()
+		A = np.multiply(A, np.random.normal(size=(m,n**2)))
+		return A
+
 	def make_CGPERM():
 		return 5
 	def make_RDIRAC():
