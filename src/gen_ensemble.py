@@ -3,6 +3,7 @@
 # Purpose: A Python module to generate sampling ensembles for matrix recovery via nuclear norm minimization.
 
 import common
+import numpy as np
 
 def matrix_sample(m, n, meas, mat):
 	# Input:
@@ -18,9 +19,25 @@ def matrix_sample(m, n, meas, mat):
 
 
 	def make_ENTRY():
-		return 0
+		# population is the linear indices of the strict upper triangle of an n by n matrix
+		population = np.flatnonzero(np.triu(np.ones((n,n))))
+		# idxs is a set of random indices without repetition
+		idxs = np.random.choice(population,size=m,replace=False)
+		A = np.zeros((m,n**2))
+		for (i,j) in enumerate(idxs):
+			A[i,j] = 1.0
+		return A
+
 	def make_PERM():
-		return 1
+		A = np.zeros((m,n**2))
+		for i in xrange(m):
+			permi = np.random.permutation(n)
+			Ai = np.zeros((n,n))
+			for (j,k) in enumerate(permi):
+				Ai[j,k] = 1.0 / sqrt(n)
+			A[i,:] = Ai.flatten()
+		return A
+
 	def make_RSPERM():
 		return 2
 	def make_CSPERM():
