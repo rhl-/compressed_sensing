@@ -18,4 +18,23 @@ def getTargetSample(n, r, target):
 	# Output:
 	# X0   -  an n by n array of rank r of type target
 
-	pass
+	def makeRPSD():
+		pass
+	def makeRSYM():
+		pass
+	def makeHPSD():
+		pass
+	def makeHERM():
+		pass
+
+	if target == common.TARGET_TYPES.RPSD:
+		return makeRPSD()
+	elif target == common.TARGET_TYPES.RSYM:
+		return makeRSYM()
+	elif target == common.TARGET_TYPES.HPSD:
+		return makeHPSD()
+	elif target == common.TARGET_TYPES.HERM:
+		return makeHERM()
+	else:
+		raise TypeError('Target type string does not match any in enum!')
+
