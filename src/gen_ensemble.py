@@ -6,19 +6,19 @@ import common
 import numpy as np
 import cmath
 
-def getEnsembleSample(m, n, meas, mat):
-	# getEnsembleSample(m, n, meas, mat)
+def getEnsembleSample(m, n, meas, target):
+	# getEnsembleSample(m, n, meas, target)
 	#
 	# Input:
-	# m    - number of measurements
-	# n    - dimension of matrixes we will be "sensing" with the ensemble
-	# meas - an enum type taking on one of the following (enum) values:
-    #        ENTRY, PERM, RSPERM, CSPERM, RGPERM, CGPERM, RDIRAC, CDIRAC, RGAUSS, CGAUSS
-    # mat  - an enum type taking on one of the following (enum) values:
-    #        RPSD, RSYM, HPSD, HERM
+	# m       - number of measurements
+	# n       - dimension of matrixes we will be "sensing" with the ensemble
+	# meas 	  - an enum type taking on one of the following (enum) values:
+    #           ENTRY, PERM, RSPERM, CSPERM, RGPERM, CGPERM, RDIRAC, CDIRAC, RGAUSS, CGAUSS
+    # target  - an enum type taking on one of the following (enum) values:
+    #           RPSD, RSYM, HPSD, HERM
     #
 	# Output:
-	# A    - array of size m by n^2, containing the sampling matrices as row vectors
+	# A       - array of size m by n^2, containing the sampling matrices as row vectors
 
 
 	def make_ENTRY():

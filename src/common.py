@@ -13,4 +13,4 @@ def enum(*sequential, **named):
     return type('Enum', (), enums)
 
 ENSEMBLE_TYPES = enum('ENTRY', 'PERM', 'RSPERM', 'CSPERM', 'RGPERM', 'CGPERM', 'RDIRAC', 'CDIRAC', 'RGAUSS', 'CGAUSS')
-MATRIX_TYPES   = enum('RPSD', 'RSYM', 'HPSD', 'HERM')
+TARGET_TYPES   = enum('RPSD', 'RSYM', 'HPSD', 'HERM')
