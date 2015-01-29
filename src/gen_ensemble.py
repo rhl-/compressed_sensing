@@ -33,17 +33,21 @@ def getEnsembleSample(m, n, meas, target):
 		for (i,j) in enumerate(idxs):
 			A[i,j] = 1.0
 		return A
-
-	def make_PERM():
-		# Each matrix is a random permutation scaled by 1/sqrt(n)
+	
+	# A random permutation
+	def random_permutation():
 		A = np.zeros((m,n**2))
 		for i in xrange(m):
 			permi = np.random.permutation(n)
 			Ai = np.zeros((n,n))
 			for (j,k) in enumerate(permi):
-				Ai[j,k] = 1.0 / np.sqrt(n)
+				Ai[j,k] = 1.0
 			A[i,:] = Ai.flatten()
 		return A
+
+	def make_PERM():
+		# Each matrix is a random permutation scaled by 1/sqrt(n)
+		return random_permutation()/np.sqrt(n)
 
 	def make_RSPERM():
 		# Add a sign to the permutation
@@ -66,10 +70,10 @@ def getEnsembleSample(m, n, meas, target):
 		return A
 
 	def make_CGPERM():
-		return 5
+		#Initially A is unscaled by 1/sqrt(n)
+		A = random_permutation()
+		return (1.0/sqrt(2.0))*A*.*(np.random.normal(size=(m,m**2)) + 1j*np.random.normal(m,n**2))
 
-	#TODO finish me..
-	# confused by victors code..
 	def generate_kronecker_sequence():
 		p = np.random.permutation(n**2)
 		p = [ i for i in p if (np.base_repr( i, 4).count('2')%2 ==0)]
@@ -87,8 +91,8 @@ def getEnsembleSample(m, n, meas, target):
 			for j in seq:
 				Ai = np.kron(Ai,basis[j])
 			A[i,:] = Ai.flatten()
-		return A
-			
+		return A/np.sqrt(n)
+		
 	def make_RDIRAC():
 		I = np.matrix('1.0 0.0; 0.0 1.0')
 		wx = np.matrix('0.0 1.0; 1.0 0.0')
