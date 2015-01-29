@@ -5,6 +5,7 @@
 import common
 import gen_ensemble
 import gen_target
+import numpy as np # Might not need this
 
 class MCDriver:
 	def __init__(self, n=32, target=common.TARGET_TYPES.RPSD, nMC=10):
