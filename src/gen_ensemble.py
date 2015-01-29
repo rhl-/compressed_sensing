@@ -6,7 +6,9 @@ import common
 import numpy as np
 import cmath
 
-def matrix_sample(m, n, meas, mat):
+def getEnsembleSample(m, n, meas, mat):
+	# getEnsembleSample(m, n, meas, mat)
+	#
 	# Input:
 	# m    - number of measurements
 	# n    - dimension of matrixes we will be "sensing" with the ensemble
