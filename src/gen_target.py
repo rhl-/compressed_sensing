@@ -18,14 +18,30 @@ def getTargetSample(n, r, target):
 	# Output:
 	# X0   -  an n by n array of rank r of type target
 
+	def rand_diag():
+		return np.diag(np.sign(np.random.normal(size=(n,r))))
+	#qr
+	# LinAlgError :
+		#If factoring fails.
 	def makeRPSD():
-		pass
+		q = np.linalg.qr( np.random.normal(size=(n,r)),mode='economic')
+		#TODO if( q.shape[ 1] is not r)
+			#ERROR
+		return q*q.transpose()
+
 	def makeRSYM():
-		pass
+		q = np.linalg.qr( np.random.normal(size=(n,r)),mode='economic')
+		return q*rand_diag()*q.transpose() 
+
 	def makeHPSD():
-		pass
+		q = np.random.normal(size=(n,r)) + 1j*np.random.normal(size=(n,r))
+		q = np.linalg.qr( q, mode='economic')
+		return q*q.transpose()
+
 	def makeHERM():
-		pass
+		q = np.random.normal(size=(n,r)) + 1j*np.random.normal(size=(n,r))
+		q = np.linalg.qr( q, mode='economic')
+		return q*rand_diag()*q.transpose() 
 
 	if target == common.TARGET_TYPES.RPSD:
 		return makeRPSD()
