@@ -35,7 +35,7 @@ def getEnsembleSample(m, n, meas, target):
 		return A
 	
 	# A random permutation
-	def random_permutation():
+	def make_PERM():
 		A = np.zeros((m,n**2))
 		for i in xrange(m):
 			permi = np.random.permutation(n)
@@ -43,40 +43,36 @@ def getEnsembleSample(m, n, meas, target):
 			for (j,k) in enumerate(permi):
 				Ai[j,k] = 1.0
 			A[i,:] = Ai.flatten()
-		return A
+		return A/np.sqrt(n)
 
-	def make_PERM():
-		# Each matrix is a random permutation scaled by 1/sqrt(n)
-		return random_permutation()/np.sqrt(n)
-
+	# Add a sign to the permutation
 	def make_RSPERM():
-		# Add a sign to the permutation
 		A = make_PERM()
 		A[np.where(np.random.rand(m,n**2) > 0.5)] *= -1.0
 		return A
-
+		
+	# Modulate with a complex phase
 	def make_CSPERM():
-		# Modulate with a complex phase
 		B = make_RSPERM()
 		A = np.zeros((m,n**2),dtype=complex)
 		A += B
 		A[np.where(np.random.rand(m,n**2) > 0.5)] *= 1.0j
 		return A
 
+	# Modulate with a Gaussian
 	def make_RGPERM():
-		# Modulate with a Gaussian
-		A = make_RSPERM()
-		A = np.multiply(A, np.random.normal(size=(m,n**2)))
-		return A
+		A = make_PERM()
+		return np.multiply(A, np.random.normal(size=(m,n**2)))
 
 	def make_CGPERM():
 		#Initially A is unscaled by 1/sqrt(n)
-		A = random_permutation()
+		A = make_PERM() 
 		return (1.0/sqrt(2.0))*A*.*(np.random.normal(size=(m,m**2)) + 1j*np.random.normal(m,n**2))
 
 	def generate_kronecker_sequence():
 		p = np.random.permutation(n**2)
-		p = [ i for i in p if (np.base_repr( i, 4).count('2')%2 ==0)]
+		if (target == common.TARGET_TYPES.RPSD) or (target == common.TARGET_TYPES.RSYM): 
+			p = [ i for i in p if (np.base_repr( i, 4).count('2')%2 ==0)]
 		return p[:m]
 
 	def dirac_matrix( basis):
