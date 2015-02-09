@@ -67,7 +67,7 @@ def getEnsembleSample(m, n, meas, target):
 	def make_CGPERM():
 		#Initially A is unscaled by 1/sqrt(n)
 		A = make_PERM() 
-		return (1.0/sqrt(2.0))*A*.*(np.random.normal(size=(m,m**2)) + 1j*np.random.normal(m,n**2))
+		return np.multiply((1.0/np.sqrt(2.0))*A,(np.random.normal(size=(m,m**2)))) + 1j*np.random.normal(size=(m,n**2))
 
 	def generate_kronecker_sequence():
 		p = np.random.permutation(n**2)
@@ -106,10 +106,10 @@ def getEnsembleSample(m, n, meas, target):
         	return dirac_matrix(basis);
 
 	def make_RGAUSS():
-		return (1.0/n)*np.randn((m,n*n))
+		return (1.0/n)*np.random.normal(size=(m,n*n))
 
 	def make_CGAUSS():
-        	return (1.0/(np.sqrt(2)*n)) * (np.randn((m,n^2)) + 1j*np.randn((m,n**2)))
+        	return (1.0/(np.sqrt(2)*n)) * (np.random.normal(size=(m,n**2)) + 1j*np.random.normal(size=(m,n**2)))
 
 	# Each subfunction will define the returned matrix A,
 	# so just call the appropriate subfunction and then return A
@@ -133,6 +133,6 @@ def getEnsembleSample(m, n, meas, target):
 	elif meas == common.ENSEMBLE_TYPES.RGAUSS:
 		return make_RGAUSS()
 	elif meas == common.ENSEMBLE_TYPES.CGAUSS:
-		return make_GAUSS()
+		return make_CGAUSS()
 	else:
 		raise TypeError('Ensemble type string does not match any in enum!')
