@@ -7,7 +7,6 @@ import common
 import numpy as np
 import cmath
 
-
 def getEnsembleSample(m, n, meas, target):
 	# getEnsembleSample(m, n, meas, target)
 	#
@@ -54,8 +53,7 @@ def getEnsembleSample(m, n, meas, target):
 	# Modulate with a complex phase
 	def make_CSPERM():
 		B = make_RSPERM()
-		A = np.zeros((m,n**2),dtype=complex)
-		A += B
+		A = np.zeros((m,n**2),dtype=complex) + B 
 		A[np.where(np.random.rand(m,n**2) > 0.5)] *= 1.0j
 		return A
 
@@ -67,7 +65,7 @@ def getEnsembleSample(m, n, meas, target):
 	def make_CGPERM():
 		#Initially A is unscaled by 1/sqrt(n)
 		A = make_PERM() 
-		return np.multiply((1.0/np.sqrt(2.0))*A,(np.random.normal(size=(m,m**2)))) + 1j*np.random.normal(size=(m,n**2))
+		return np.multiply((1.0/np.sqrt(2.0))*A,(np.random.normal(size=(m,n**2))) + 1j*np.random.normal(size=(m,n**2)))
 
 	def generate_kronecker_sequence():
 		p = np.random.permutation(n**2)

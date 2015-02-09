@@ -4,13 +4,15 @@ import numpy as np
 import cmath
 import gen_ensemble as ensemble
 
-
 class ensemble_test(unittest.TestCase):
+	def assertAlmostEqualDigits(self,a,b):
+		self.assertAlmostEqual(a,b,self.digits)
+
 	def is_perm_format(self,A):
 		nnz = np.count_nonzero( A)
- 		self.assertEquals( nnz, self.m*self.n*self.n)
+ 		self.assertEquals( nnz, self.m*(self.n))
 		for matrix in A:
-			self.assertTrue( np.count_nonzero( matrix) == self.n**2)
+			self.assertEquals( np.count_nonzero( matrix), self.n)
 			for row in np.reshape(matrix, (self.n,self.n)):
 				self.assertEquals( np.count_nonzero( row), 1)
 			for column in np.reshape(matrix, (self.n,self.n)).T:
@@ -20,6 +22,7 @@ class ensemble_test(unittest.TestCase):
 		return ensemble.getEnsembleSample(self.m, self.n, t1, t2)
 
 	def setUp(self):
+		self.digits=4
 		self.m = 128
 		self.n = 128
 
@@ -37,55 +40,55 @@ class ensemble_test(unittest.TestCase):
 	def test_rsperm(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.RSPERM)
 		self.is_perm_format( A)
-		B = n*np.multiply(A,A);	
-		self.assertAlmostEqual( sum(sum(B)), np.count_nonzero( B))
+		B = self.n*np.multiply(A,A);	
+		self.assertAlmostEqualDigits( sum(sum(B)), np.count_nonzero( B))
 
 	def test_csperm(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.CSPERM)
 		self.is_perm_format( A)
 		B = np.multiply(A,A)
 		B = np.multiply(B,B)
-		B = (n**2)*B
-		self.assertAlmostEqual( sum(sum(B)), np.count_nonzero( B))
+		B = (self.n**2)*B
+		self.assertAlmostEqualDigits( sum(sum(B)), np.count_nonzero( B))
 
 	def test_rgperm(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.RGPERM)
 		self.is_perm_format( A)
-		B = n*np.multiply(A,A)
-		self.assertAlmostEqual( sum(sum(B)), np.count_nonzero( B))
+		B = A[ np.nonzero( A)].flatten()
+		self.assertAlmostEqual( np.mean(B), 0.0, 2)
+		self.assertAlmostEqual( np.mean( np.multiply(B,B).flatten()), 1.0/self.n, 2)
 
 	def test_cgperm(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.CGPERM)
 		self.is_perm_format( A)
 		B = np.multiply(A,A)
 		B = np.multiply(B,B)
-		B = (n**2)*B
-		self.assertAlmostEqual( sum(sum(B)), np.count_nonzero( B))
-		B = np.nonzeroflatten( A);
-		self.assertAlmostEqual( np.mean( B), 0)
-		self.assertAlmostEqual( np.mean( np.multiply( abs(B), abs(B))), 1.0/(self.n**2))
+		B = (self.n**2)*B
+		B = A[ np.nonzero( A)].flatten()
+		self.assertAlmostEqual( np.mean( B), 0.0, 2)
+		self.assertAlmostEqual( np.mean( np.multiply( abs(B), abs(B))), 1.0/(self.n**2), 1)
 
 	def test_rdirac(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.RDIRAC)
 		for row in A:
-			self.assertEqual(np.linalg.norm( row), 1)
+			self.assertAlmostEqualDigits(np.linalg.norm( row), 1)
 
 	def test_cdirac(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.CDIRAC)
 		for row in A:
-			self.assertEqual(np.linalg.norm( row),1)
+			self.assertAlmostEqualDigits(np.linalg.norm( row),1)
 	
 	def test_rgauss(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.RGAUSS)
 		B = A.flatten();
-		self.assertAlmostEqual( np.mean( B), 0)
-		self.assertAlmostEqual( np.mean( np.multiply( abs(B), abs(B))), 1.0/(self.n**2))
+		self.assertAlmostEqualDigits( np.mean( B), 0)
+		self.assertAlmostEqualDigits( np.mean( np.multiply( abs(B), abs(B))), 1.0/(self.n**2))
 	
 	def test_cgauss(self):
 		A = self.get_sample(common.ENSEMBLE_TYPES.CGAUSS)
 		B = A.flatten();
-		self.assertAlmostEqual( np.mean( B), 0)
-		self.assertAlmostEqual( np.mean( np.multiply( abs(B), abs(B))), 1.0/(self.n**2))
+		self.assertAlmostEqualDigits( np.mean( B), 0)
+		self.assertAlmostEqualDigits( np.mean( np.multiply( abs(B), abs(B))), 1.0/(self.n**2))
 
 if __name__ == '__main__':
     unittest.main()

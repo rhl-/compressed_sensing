@@ -12,5 +12,7 @@ def enum(*sequential, **named):
     enums = dict(zip(sequential, range(len(sequential))), **named)
     return type('Enum', (), enums)
 
+ENSEMBLE_NAMES = ['ENTRY', 'PERM', 'RSPERM', 'CSPERM', 'RGPERM', 'CGPERM', 'RDIRAC', 'CDIRAC', 'RGAUSS', 'CGAUSS']
 ENSEMBLE_TYPES = enum('ENTRY', 'PERM', 'RSPERM', 'CSPERM', 'RGPERM', 'CGPERM', 'RDIRAC', 'CDIRAC', 'RGAUSS', 'CGAUSS')
 TARGET_TYPES   = enum('RPSD', 'RSYM', 'HPSD', 'HERM')
+TARGET_NAMES   = ['RPSD', 'RSYM', 'HPSD', 'HERM']
