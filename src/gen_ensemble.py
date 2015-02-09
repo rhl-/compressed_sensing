@@ -100,9 +100,9 @@ def getEnsembleSample(m, n, meas, target):
 	def make_CDIRAC():
 		I = np.matrix('1.0 0.0; 0.0 1.0')
 		sx = np.matrix('0.0 1.0; 1.0 0.0')
-		sy = np.matrix('0.0 -j; j 0.0')
+		sy = np.matrix('0.0 -sqrt(-1); sqrt(-1) 0.0')
 		sz = np.matrix('1 0.0; 0.0 -1.0')
-        	basis =(I,wx,wy,wz)
+        	basis =(I,sx,sy,sz)
         	return dirac_matrix(basis);
 
 	def make_RGAUSS():
