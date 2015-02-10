@@ -12,7 +12,7 @@ from lockfile import LockFile
 from multiprocessing import Process
 
 class MCDriver:
-	def __init__(self, n=8, nMC=1, filename=None):
+	def __init__(self, n=8, nMC=10, filename=None):
 		#TODO: enforce that n is a power of 2
 		np.random.seed(12181990)
 		self.n = n
@@ -26,7 +26,7 @@ class MCDriver:
 		# to sweep over m and r and generate a whole bunch of trials of
 		# each and call solver on those while logging output
 
-		for target in range(1):#range(len(common.TARGET_NAMES)):
+		for target in range(len(common.TARGET_NAMES)):
 			for ensemble in range(len(common.ENSEMBLE_NAMES)):
 
 				real_target = (target == common.TARGET_TYPES.RPSD or target == common.TARGET_TYPES.RSYM)
