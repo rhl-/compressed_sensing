@@ -19,29 +19,31 @@ def getTargetSample(n, r, target):
 	# X0   -  an n by n array of rank r of type target
 
 	def rand_diag():
-		return np.diag(np.sign(np.random.normal(size=(n,r))))
+		return np.diag(np.sign(np.random.normal(size=r)))
 	#qr
 	# LinAlgError :
 		#If factoring fails.
 	def makeRPSD():
-		q = np.linalg.qr( np.random.normal(size=(n,r)),mode='economic')
+		q, R = np.linalg.qr( np.random.normal(size=(n,r)),mode='reduced')
 		#TODO if( q.shape[ 1] is not r)
 			#ERROR
-		return q*q.transpose()
+		return np.dot(q,q.transpose())
 
 	def makeRSYM():
-		q = np.linalg.qr( np.random.normal(size=(n,r)),mode='economic')
-		return q*rand_diag()*q.transpose() 
+		q, R = np.linalg.qr( np.random.normal(size=(n,r)),mode='reduced')
+		D = np.dot(rand_diag(),q.transpose())
+		return np.dot(q, D)
 
 	def makeHPSD():
 		q = np.random.normal(size=(n,r)) + 1j*np.random.normal(size=(n,r))
-		q = np.linalg.qr( q, mode='economic')
-		return q*q.transpose()
+		q, R = np.linalg.qr( q, mode='reduced')
+		return np.dot(q, q.conj().transpose())
 
 	def makeHERM():
 		q = np.random.normal(size=(n,r)) + 1j*np.random.normal(size=(n,r))
-		q = np.linalg.qr( q, mode='economic')
-		return q*rand_diag()*q.transpose() 
+		q, R = np.linalg.qr( q, mode='reduced')
+		D = np.dot(rand_diag(),q.conj().transpose())
+		return np.dot(q, D)
 
 	if target == common.TARGET_TYPES.RPSD:
 		return makeRPSD()

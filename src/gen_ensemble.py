@@ -1,6 +1,6 @@
 # Name:    gen_ensemble.py
 # Authors: Ryan Lewis & Victor Minden
-# Purpose: A Python module to generate sampling ensembles 
+# Purpose: A Python module to generate sampling ensembles
 #	  for matrix recovery via nuclear norm minimization.
 
 import common
@@ -14,7 +14,7 @@ def getEnsembleSample(m, n, meas, target):
 	# m       - number of measurements
 	# n       - dimension of matrixes we will be "sensing" with the ensemble
 	# meas 	  - an enum type taking on one of the following (enum) values:
-        #           ENTRY,  PERM,   RSPERM, CSPERM, RGPERM, 
+        #           ENTRY,  PERM,   RSPERM, CSPERM, RGPERM,
 	# 	    CGPERM, RDIRAC, CDIRAC, RGAUSS, CGAUSS
         # target  - an enum type taking on one of the following (enum) values:
         #           RPSD, RSYM, HPSD, HERM
@@ -32,7 +32,7 @@ def getEnsembleSample(m, n, meas, target):
 		for (i,j) in enumerate(idxs):
 			A[i,j] = 1.0
 		return A
-	
+
 	# A random permutation
 	def make_PERM():
 		A = np.zeros((m,n**2))
@@ -49,11 +49,11 @@ def getEnsembleSample(m, n, meas, target):
 		A = make_PERM()
 		A[np.where(np.random.rand(m,n**2) > 0.5)] *= -1.0
 		return A
-		
+
 	# Modulate with a complex phase
 	def make_CSPERM():
 		B = make_RSPERM()
-		A = np.zeros((m,n**2),dtype=complex) + B 
+		A = np.zeros((m,n**2),dtype=complex) + B
 		A[np.where(np.random.rand(m,n**2) > 0.5)] *= 1.0j
 		return A
 
@@ -64,12 +64,12 @@ def getEnsembleSample(m, n, meas, target):
 
 	def make_CGPERM():
 		#Initially A is unscaled by 1/sqrt(n)
-		A = make_PERM() 
+		A = make_PERM()
 		return np.multiply((1.0/np.sqrt(2.0))*A,(np.random.normal(size=(m,n**2))) + 1j*np.random.normal(size=(m,n**2)))
 
 	def generate_kronecker_sequence():
 		p = np.random.permutation(n**2)
-		if (target == common.TARGET_TYPES.RPSD) or (target == common.TARGET_TYPES.RSYM): 
+		if (target == common.TARGET_TYPES.RPSD) or (target == common.TARGET_TYPES.RSYM):
 			p = [ i for i in p if (np.base_repr( i, 4).count('2')%2 ==0)]
 		return p[:m]
 
@@ -86,7 +86,7 @@ def getEnsembleSample(m, n, meas, target):
 				Ai = np.kron(Ai,basis[j])
 			A[i,:] = Ai.flatten()
 		return A/np.sqrt(n)
-		
+
 	def make_RDIRAC():
 		I = np.matrix('1.0 0.0; 0.0 1.0')
 		wx = np.matrix('0.0 1.0; 1.0 0.0')
