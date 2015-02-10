@@ -16,12 +16,11 @@ def solve(A,y,n,t):
 	def RPSD(A,y,n):
 
 		X = cp.Semidef(n)
-
 		objective = cp.Minimize( cp.norm( X, "nuc"))
-
+		constraints = [A*cp.vec(X)==y]
 		# Construct and solve the cvx_py problem
-		prob = cp.Problem( objective, [A*cp.vec(X)==y])
-		prob.solve(verbose=True)
+		prob = cp.Problem( objective, constraints)
+		prob.solve(verbose=False)
 
 		return (prob.value, X.value)
 
@@ -29,8 +28,9 @@ def solve(A,y,n,t):
 
 		X = cp.Variable(n,n)
 		objective = cp.Minimize( cp.norm( X, "nuc"))
-		prob =  cp.Problem( objective, [A*cp.vec(X)==y, X == X.T])
-		prob.solve(verbose=True)
+		constraints = [A*cp.vec(X)==y, X == X.T]
+		prob =  cp.Problem( objective, constraints)
+		prob.solve(verbose=False)
 		return (prob.value, X.value)
 
 	def HPSD(A,y,n):
@@ -45,8 +45,9 @@ def solve(A,y,n,t):
 		y2 = np.imag(y)
 
 		objective = cp.Minimize( cp.norm( U, "nuc"))
-		prob = cp.Problem( objective, [A1*cp.vec(U)==y1, A2*cp.vec(V) == y2, W == Semidef(n)])
-		prob.solve(verbose=True)
+		constraints = [A1*cp.vec(U)==y1, A2*cp.vec(V) == y2, W == Semidef(n)]
+		prob = cp.Problem( objective, constraints)
+		prob.solve(verbose=False)
 		return (prob.value, U.value + sqrt(-1) * V.value)
 
 	def HERM(A,y,n):
@@ -59,8 +60,9 @@ def solve(A,y,n,t):
 		y2 = np.imag(y)
 
 		objective = cp.Minimize( cp.norm( U, "nuc"))
-		prob = cp.Problem( objective, [A1*cp.vec(U)==y1, A2*cp.vec(V) == y2, U == U.T, V == -V.T])
-		prob.solve(verbose=True)
+		constraints = [A1*cp.vec(U)==y1, A2*cp.vec(V) == y2, U == U.T, V == -V.T]
+		prob = cp.Problem( objective, constraints)
+		prob.solve(verbose=False)
 		return (prob.value, U.value + sqrt(-1) * V.value)
 
 	if t == common.TARGET_TYPES.RPSD:
