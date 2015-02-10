@@ -6,7 +6,7 @@ import common
 import gen_ensemble
 import gen_target
 import numpy as np # Might not need this
-
+import solver
 class MCDriver:
 	def __init__(self, n=32, target=common.TARGET_TYPES.RPSD, nMC=10):
 	# __init__(self, n, target, nMC)
@@ -30,8 +30,7 @@ class MCDriver:
 		pass
 	# (A * vec(X))_i = y_i
 	def call_solver(self, A, y, n, target):
-		# either call cvx opt or fork to a C++ solver or something
-		pass
+		return solver.solve(A, y, n, target)
 	def log_output(self):
 		# write output to a file
 		# we should use a different file for each trial and then just do
