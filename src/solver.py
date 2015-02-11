@@ -22,7 +22,7 @@ def solve(A,y,n,t):
 		prob = cp.Problem( objective, constraints)
 		prob.solve(verbose=False)
 
-		return (prob.value, X.value)
+		return (prob.value, X.value, prob.status)
 
 	def RSYM(A,y,n):
 
@@ -31,7 +31,7 @@ def solve(A,y,n,t):
 		constraints = [A*cp.vec(X)==y, X == X.T]
 		prob =  cp.Problem( objective, constraints)
 		prob.solve(verbose=False)
-		return (prob.value, X.value)
+		return (prob.value, X.value, prob.status)
 
 	def HPSD(A,y,n):
 		# W = [Real(X), -Imag(X); Imag(X), Real(X)]
@@ -48,7 +48,7 @@ def solve(A,y,n,t):
 		constraints = [A1*cp.vec(U)==y1, A2*cp.vec(V) == y2, W == Semidef(n)]
 		prob = cp.Problem( objective, constraints)
 		prob.solve(verbose=False)
-		return (prob.value, U.value + sqrt(-1) * V.value)
+		return (prob.value, U.value + sqrt(-1) * V.value, prob.status)
 
 	def HERM(A,y,n):
 		U = cp.variable(n,n)
@@ -63,7 +63,7 @@ def solve(A,y,n,t):
 		constraints = [A1*cp.vec(U)==y1, A2*cp.vec(V) == y2, U == U.T, V == -V.T]
 		prob = cp.Problem( objective, constraints)
 		prob.solve(verbose=False)
-		return (prob.value, U.value + sqrt(-1) * V.value)
+		return (prob.value, U.value + sqrt(-1) * V.value, prob.status)
 
 	if t == common.TARGET_TYPES.RPSD:
 		return RPSD(A,y,n)
