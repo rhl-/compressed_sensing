@@ -15,9 +15,9 @@ import datetime
 
 class MCDriver:
 	def __init__(self, k=3, nMC=10, filename=None):
-        if( filename == None):
-            date_str=str(datetime.datetime.now()).replace(" ","")
-            filename = "matrix_completion_k_%s_nMc_%s_%s"%(k,nMC,date_str)
+		if(filename == None):
+			date_str=str(datetime.datetime.now()).replace(" ","")
+			filename = "matrix_completion_k_%s_nMc_%s_%s"%(k,nMC,date_str)
 		np.random.seed(12181990)
 		self.n = 2**k
 		self.nMC = nMC
@@ -75,14 +75,14 @@ class MCDriver:
 	def gen_problem(self, m, r, target, meas):
 		#print "%d %d %d %d" % (m,r,target,meas)
 		# generate a problem of rank r with m measurements
-        tic = time.time()
+		tic = time.time()
 		Xtrue = gen_target.getTargetSample(self.n, r, target)
-        time_target = time.time()-tic
-        tic = time.time()
+		time_target = time.time()-tic
+		tic = time.time()
 		A = gen_ensemble.getEnsembleSample(m, self.n, meas, target)
 		y = np.dot(A,Xtrue.flatten())
-        time_ensemble = time.time()-tic
-        tic = time.time()
+		time_ensemble = time.time()-tic
+		tic = time.time()
 		(opt_val, x_opt, status) = self.call_solver(A, y, self.n, target)
         time_solve = time.time()-tic
         if( status == cp.OPTIMAL):
