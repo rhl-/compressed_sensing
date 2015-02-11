@@ -13,4 +13,4 @@ class target_test(unittest.TestCase):
 		myDriver.run_trials()
 
 if __name__ == '__main__':
-    unittest.main()
+	unittest.main()

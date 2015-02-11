@@ -84,11 +84,11 @@ class MCDriver:
 		time_ensemble = time.time()-tic
 		tic = time.time()
 		(opt_val, x_opt, status) = self.call_solver(A, y, self.n, target)
-        time_solve = time.time()-tic
-        if( status == cp.OPTIMAL):
-            self.log_output(target, meas,x_opt,Xtrue, r, m,
+		time_solve = time.time()-tic
+		if( status == cp.OPTIMAL):
+			self.log_output(target, meas,x_opt,Xtrue, r, m,
 time_target,time_ensemble,time_solve)
- 
+
 	def call_solver(self, A, y, n, target):
 		return solver.solve(A, y, n, target)
 
@@ -96,12 +96,12 @@ time_target,time_ensemble,time_solve)
 		# write output to a file
 		# we should use a different file for each trial and then just do
 		# a "reduce".  This way any individual task isn't too long
-    	try:
+		try:
 			lock = LockFile(self.filename)
 		except:
 			raise "Could not open file"
-		
-	    tol = 1e-2
+
+		tol = 1e-2
 		err0 = 0
 		err1 = np.linalg.norm(Xtrue - x_opt,'fro') / np.linalg.norm(Xtrue)
 		if err1 > tol:
