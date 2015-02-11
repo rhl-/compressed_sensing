@@ -17,7 +17,7 @@ class MCDriver:
 	def __init__(self, k=3, nMC=10, filename=None):
         if( filename == None):
             date_str=str(datetime.datetime.now()).replace(" ","")
-            filename = "output_k_%s_nMc_%s_%s"%(k,nMC,date_str)
+            filename = "matrix_completion_k_%s_nMc_%s_%s"%(k,nMC,date_str)
 		np.random.seed(12181990)
 		self.n = 2**k
 		self.nMC = nMC
