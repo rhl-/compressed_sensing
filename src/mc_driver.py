@@ -11,6 +11,7 @@ import datetime
 import sys
 
 def compute_task(n,nMC,filename,m,r,target,ensemble):
+	#TODO: This can instead go ahead and call out for this..
 	instance = problem_instance(n,nMC,filename) 	
 	instance.solve_problem(m,r,target,ensemble)
 
