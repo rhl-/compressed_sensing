@@ -3,12 +3,12 @@ This project aims to check the phase transition behavior of a number of sensing 
 
 
 To run:
-cd src/
-nohup python do_it.py &
+- cd src/
+- nohup python do_it.py &
 
 # Requirements
-sudo pip install lockfile
-sudo pip install cvxopt
+- sudo pip install lockfile
+- sudo pip install cvxopt
 
 # Interesting links for solver
 http://sdpa.sourceforge.net/index.html
