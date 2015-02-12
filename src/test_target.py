@@ -53,9 +53,5 @@ class target_test(unittest.TestCase):
 		self.assertAlmostEqualDigits(max_diff_from_1, 0)
 
 
-
-
-
-
 if __name__ == '__main__':
     unittest.main()

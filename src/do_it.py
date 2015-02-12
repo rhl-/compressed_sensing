@@ -1,4 +1,3 @@
-from mc_driver import MCDriver
+import mc_driver
 
-myDriver = MCDriver()
-myDriver.run_trials()
+mc_driver.run_trials()
