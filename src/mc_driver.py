@@ -19,7 +19,7 @@ def run_trials(k=3,nMC=10,filename=None):
 	tic = time.time()
 	if(filename == None):
 		date_str=str(datetime.datetime.now()).replace(" ","")
-		filename = "matrix_completion_k_%s_nMc_%s_%s"%(k,nMC,date_str)
+		filename = "OUTPUT_n_%s_nMc_%s_%s"%(2 ** k,nMC,date_str)
 	np.random.seed(12181990)
 	n = 2**k
 	# to sweep over m and r and generate a whole bunch of trials of
