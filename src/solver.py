@@ -38,30 +38,26 @@ def solve(A,y,n,t):
 				return (0, 0, 666)
 
 
-	# def RPSD_cp(A,y,n):
-	# 	X = cp.Semidef(n)
-	# 	objective = cp.Minimize( cp.norm( X, "nuc"))
-	# 	constraints = [A*cp.vec(X)==y]
-	# 	# Construct and solve the cvx_py problem
-	# 	prob = cp.Problem( objective, constraints)
-	# 	prob.solve(verbose=False)
-
-	# 	return (prob.value, X.value, prob.status)
-
-	# def RPSD(A,y,n):
-	# 	(val1,X1,stat1) = RPSD_mos(A,y,n)
-	# 	(val2,X2,stat2) = RPSD_cp(A,y,n)
-	# 	print np.linalg.norm(X1-X2,'fro')
-	# 	print val1
-	# 	print val2
-
 	def RSYM(A,y,n):
-		X = cp.Variable(n,n)
-		objective = cp.Minimize( cp.norm( X, "nuc"))
-		constraints = [A*cp.vec(X)==y, X == X.T]
-		prob =  cp.Problem( objective, constraints)
-		prob.solve(verbose=False)
-		return (prob.value, X.value, prob.status)
+		with Model("RSYM_SOLVE") as M:
+			X = M.variable(NDSet( n,n), Domain.unbounded())
+			U = M.variable("U", Domain.inPSDCone( n))
+			obj = Expr.sum(U.diag())
+			M.objective(ObjectiveSense.Minimize, obj)
+			(i,j) = np.nonzero(A)
+			v = A[i,j]
+			(m,p) = A.shape
+			B = Matrix.sparse(m,p,i,j,v)
+			M.constraint(Expr.mul(B,Variable.reshape(X,n*n)),Domain.equalsTo(y))
+			BLOCK = Variable.vstack( Variable.hstack(U, X), Variable.hstack(X, U))
+			M.constraint( BLOCK , Domain.inPSDCone( 2*n) )
+			M.solve()
+			try:
+				x = np.array(X.level()).reshape(n,n)
+				return (2*np.sum(U.diag().level()), x,  cp.OPTIMAL)
+			except:
+				return (0, 0, 666)
+
 
 	def HPSD(A,y,n):
 		with Model("HPSD_SOLVE") as M:
