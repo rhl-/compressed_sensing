@@ -24,8 +24,8 @@ def run_trials(k=3,nMC=10,filename=None):
 	n = 2**k
 	# to sweep over m and r and generate a whole bunch of trials of
 	# each and call solver on those while logging output
-	p = Pool()
-	for target in range(len(common.TARGET_NAMES)):
+	#p = Pool()
+	for target in [2]:#range(len(common.TARGET_NAMES)):
 		for ensemble in range(len(common.ENSEMBLE_NAMES)):
 			#40 iterations of this loop it seems.
 			real_target = (target == common.TARGET_TYPES.RPSD or target == common.TARGET_TYPES.RSYM)
@@ -66,8 +66,8 @@ def run_trials(k=3,nMC=10,filename=None):
 	sys.stdout.write('Waiting...')
 	sys.stdout.flush()
 	tic=time.time()
-	p.close()
-    	p.join()
+	# p.close()
+ #    	p.join()
 	toc = time.time()-tic
 	print " done."
 	print"Spent %f seconds waiting for processes"%(toc)

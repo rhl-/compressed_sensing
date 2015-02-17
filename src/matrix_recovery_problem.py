@@ -41,6 +41,7 @@ class problem_instance:
 		status_str="BAD"
 		if( status == cp.OPTIMAL):
 			status_str="OPTIMAL"
+
 		self.log_output(status_str, target, meas,x_opt,Xtrue, r, m, time_target,time_ensemble,time_solve,memory_used)
 
 	def call_solver(self, A, y, n, target):
@@ -57,6 +58,7 @@ class problem_instance:
 
 		tol = 1e-2
 		err0 = 0
+
 		err1 = np.linalg.norm(Xtrue - x_opt,'fro') / np.linalg.norm(Xtrue)
 		if err1 > tol:
 			err0 = 1
