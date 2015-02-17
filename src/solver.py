@@ -1,4 +1,7 @@
 import cvxpy as cp
+import mosek 
+import mosek.fusion 
+from   mosek.fusion import * 
 import numpy as np
 import cvxopt
 import common
@@ -13,16 +16,27 @@ import common
 # X: the CVX solution.
 # val: NaN if the algorithm diverged
 def solve(A,y,n,t):
+	# Make mosek environment 
 	def RPSD(A,y,n):
-
-		X = cp.Semidef(n)
-		objective = cp.Minimize( cp.norm( X, "nuc"))
-		constraints = [A*cp.vec(X)==y]
-		# Construct and solve the cvx_py problem
-		prob = cp.Problem( objective, constraints)
-		prob.solve(verbose=False)
-
-		return (prob.value, X.value, prob.status)
+		with Model("RPSD_SOLVE") as M:
+			X = M.variable("X", Domain.isPSDCone( n))
+			obj = Expr.sum(X.diag())
+			M.objective(ObjectiveSense.Minimize, obj)
+			M.constraint(Expr.dot(A,X),Domain.equalsTo(y))
+			
+			M.solve()
+			try:
+				return (X, np.sum(X.diag().level()), cp.OPTIMAL)
+			except:
+				return (0, 0, 666)
+#		X = cp.Semidef(n)
+#		objective = cp.Minimize( cp.norm( X, "nuc"))
+#		constraints = [A*cp.vec(X)==y]
+#		# Construct and solve the cvx_py problem
+#		prob = cp.Problem( objective, constraints)
+#		prob.solve(verbose=False)
+#
+#		return (prob.value, X.value, prob.status)
 
 	def RSYM(A,y,n):
 

@@ -9,6 +9,7 @@ nohup python do_it.py &
 # Requirements
 sudo pip install lockfile
 sudo pip install cvxopt
+sudo pip install psutil
 
 # Interesting links for solver
 http://sdpa.sourceforge.net/index.html
