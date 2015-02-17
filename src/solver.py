@@ -6,6 +6,7 @@ import numpy as np
 import cvxopt
 import common
 import cmath
+import sys
 # CVX algorithm for nuclear norm minimization on square matrices
 # Input:
 # A : the measurement matrix A. Preconditions # rows of A = n^2
@@ -138,25 +139,29 @@ def solve(A,y,n,t):
 			U = M.variable(NDSet(n,n), Domain.unbounded())
 			V = M.variable(NDSet(n,n), Domain.unbounded())
 
-			Z = M.variable("Z", Domain.inPSDCone( 2*n))
+			Z1 = M.variable("Z1", Domain.inPSDCone( n))
+			Z2 = M.variable(NDSet(n,n), Domain.unbounded())
 
-			obj = Expr.sum(U.diag())
-			obj = Expr.sum(U.diag())
+			obj = Expr.sum(Z1.diag())
 
 			M.objective(ObjectiveSense.Minimize, obj)
 
 			row1 = Expr.hstack(U,Expr.mul(-1.0,V));
 			row2 = Expr.hstack(V,U);
 
+			B1 = Expr.vstack(Expr.hstack(Z1,U), Expr.hstack(U,Z1))
+			B2 = Expr.vstack(Expr.hstack(Z2,V), Expr.hstack(V,Z2))
 
-			X = Expr.vstack(row1,row2)
-			BLOCK = Variable.vstack( Variable.hstack(Z, X), Variable.hstack(X, Z))
+
+			BLOCK = Expr.vstack( Expr.hstack(B1, Expr.neg(B2)), Expr.hstack(B2, B1))
 
 			M.constraint(BLOCK, Domain.inPSDCone(4*n))
 
 
 			M.constraint(Expr.add(V, Variable.transpose(V)),Domain.equalsTo(0.0))
 			M.constraint(Expr.sub(U, Variable.transpose(U)),Domain.equalsTo(0.0))
+			M.constraint(Expr.sub(Z1, Variable.transpose(Z1)),Domain.equalsTo(0.0))
+			M.constraint(Expr.add(Z2, Variable.transpose(Z2)),Domain.equalsTo(0.0))
 
 			(i,j) = np.nonzero(A1)
 			v = A1[i,j]
@@ -173,8 +178,10 @@ def solve(A,y,n,t):
 
 			M.constraint(RealPart,Domain.equalsTo(y1))
 			M.constraint(ImagPart,Domain.equalsTo(y2))
-
+			# M.setLogHandler(sys.stdout)
 			M.solve()
+			# M.writeTask("temp.opf")
+			# print U.level()
 			try:
 				U1 = np.matrix(U.level()).reshape(n,n)
 				V1 = np.matrix(V.level()).reshape(n,n)
@@ -182,7 +189,7 @@ def solve(A,y,n,t):
 				#print A
 
 				x = U1 + 1j* V1
-				obj = 2*np.sum(U.diag().level())
+				obj = np.sum(Z1.diag().level())
 
 				# print A*x.reshape(n*n,1)
 				# print y
