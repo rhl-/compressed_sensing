@@ -23,7 +23,7 @@ class problem_instance:
 		self.filename = filename
 		# status, target, ensemble, n, r, m, err_1, err_0, time_target, time_ensemble, time_solve, memory_used
 		self.formatstring = "%s,%s,%s,%d,%d,%d,%f,%d,%f,%f,%f,%f\n"
-		
+
 	def solve_problem(self, m, r, target, meas):
 		timer = Timer()
 		# generate a problem of rank r with m measurements
@@ -42,7 +42,7 @@ class problem_instance:
 		if( status == cp.OPTIMAL):
 			status_str="OPTIMAL"
 		self.log_output(status_str, target, meas,x_opt,Xtrue, r, m, time_target,time_ensemble,time_solve,memory_used)
- 
+
 	def call_solver(self, A, y, n, target):
 		return solver.solve(A, y, n, target)
 

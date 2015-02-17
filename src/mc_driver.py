@@ -2,7 +2,7 @@
 # Authors: Ryan Lewis & Victor Minden
 # Purpose: A Python module that contains the Monte Carlo driver for the main experiment.
 import common
-from matrix_recovery_problem import * 
+from matrix_recovery_problem import *
 import numpy as np # Might not need this
 from numpy.random import randint as randi
 from multiprocessing import Pool
@@ -12,7 +12,7 @@ import sys
 
 def compute_task(n,nMC,filename,m,r,target,ensemble):
 	#TODO: This can instead go ahead and call out for this..
-	instance = problem_instance(n,nMC,filename) 	
+	instance = problem_instance(n,nMC,filename)
 	instance.solve_problem(m,r,target,ensemble)
 
 def run_trials(k=3,nMC=10,filename=None):
@@ -25,7 +25,7 @@ def run_trials(k=3,nMC=10,filename=None):
 	# to sweep over m and r and generate a whole bunch of trials of
 	# each and call solver on those while logging output
 	p = Pool()
-	for target in range(len(common.TARGET_NAMES)):
+	for target in [0]:#range(len(common.TARGET_NAMES)):
 		for ensemble in range(len(common.ENSEMBLE_NAMES)):
 			#40 iterations of this loop it seems.
 			real_target = (target == common.TARGET_TYPES.RPSD or target == common.TARGET_TYPES.RSYM)
@@ -57,7 +57,9 @@ def run_trials(k=3,nMC=10,filename=None):
 				for (ms, r) in zip(ms_foreach_r,rs):
 					for m in ms:
 						for trial in xrange(nMC):
-							p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
+							#p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
+							compute_task(n,nMC,filename,m,r,target,ensemble)
+
 
 	toc = time.time()-tic
 	print "Queued all jobs \t %f"%(toc)

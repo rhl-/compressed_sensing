@@ -1,7 +1,7 @@
 import cvxpy as cp
-import mosek 
-import mosek.fusion 
-from   mosek.fusion import * 
+import mosek
+import mosek.fusion
+from   mosek.fusion import *
 import numpy as np
 import cvxopt
 import common
@@ -16,14 +16,27 @@ import common
 # X: the CVX solution.
 # val: NaN if the algorithm diverged
 def solve(A,y,n,t):
-	# Make mosek environment 
+	# Make mosek environment
 	def RPSD(A,y,n):
 		with Model("RPSD_SOLVE") as M:
-			X = M.variable("X", Domain.isPSDCone( n))
+			X = M.variable("X", Domain.inPSDCone( n))
 			obj = Expr.sum(X.diag())
 			M.objective(ObjectiveSense.Minimize, obj)
-			M.constraint(Expr.dot(A,X),Domain.equalsTo(y))
-			
+
+			(i,j) = np.nonzero(A)
+			v = A[i,j]
+			(m,p) = A.shape
+			B = Matrix.sparse(m,p,i,j,v)
+			# B = DenseMatrix(A)
+			# print B
+			# print X
+			# print "N is %s" % (n * n)
+			# print y
+
+			# print Variable.reshape(X,n*n)
+
+			M.constraint(Expr.mul(B,Variable.reshape(X,n*n)),Domain.equalsTo(y))
+
 			M.solve()
 			try:
 				return (X, np.sum(X.diag().level()), cp.OPTIMAL)
