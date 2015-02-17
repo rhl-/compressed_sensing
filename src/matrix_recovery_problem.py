@@ -58,7 +58,10 @@ class problem_instance:
 
 		tol = 1e-2
 		err0 = 0
-
+		if (m > 110):
+			temp = Xtrue - x_opt
+			print temp
+			exit(0)
 		err1 = np.linalg.norm(Xtrue - x_opt,'fro') / np.linalg.norm(Xtrue)
 		if err1 > tol:
 			err0 = 1
