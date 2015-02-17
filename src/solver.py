@@ -39,7 +39,8 @@ def solve(A,y,n,t):
 
 			M.solve()
 			try:
-				return (X, np.sum(X.diag().level()), cp.OPTIMAL)
+				x = np.array(X.level()).reshape(n,n)
+				return (np.sum(X.diag().level()), x,  cp.OPTIMAL)
 			except:
 				return (0, 0, 666)
 #		X = cp.Semidef(n)
