@@ -27,13 +27,6 @@ def solve(A,y,n,t):
 			v = A[i,j]
 			(m,p) = A.shape
 			B = Matrix.sparse(m,p,i,j,v)
-			# B = DenseMatrix(A)
-			# print B
-			# print X
-			# print "N is %s" % (n * n)
-			# print y
-
-			# print Variable.reshape(X,n*n)
 
 			M.constraint(Expr.mul(B,Variable.reshape(X,n*n)),Domain.equalsTo(y))
 
@@ -43,14 +36,24 @@ def solve(A,y,n,t):
 				return (np.sum(X.diag().level()), x,  cp.OPTIMAL)
 			except:
 				return (0, 0, 666)
-#		X = cp.Semidef(n)
-#		objective = cp.Minimize( cp.norm( X, "nuc"))
-#		constraints = [A*cp.vec(X)==y]
-#		# Construct and solve the cvx_py problem
-#		prob = cp.Problem( objective, constraints)
-#		prob.solve(verbose=False)
-#
-#		return (prob.value, X.value, prob.status)
+
+
+	# def RPSD_cp(A,y,n):
+	# 	X = cp.Semidef(n)
+	# 	objective = cp.Minimize( cp.norm( X, "nuc"))
+	# 	constraints = [A*cp.vec(X)==y]
+	# 	# Construct and solve the cvx_py problem
+	# 	prob = cp.Problem( objective, constraints)
+	# 	prob.solve(verbose=False)
+
+	# 	return (prob.value, X.value, prob.status)
+
+	# def RPSD(A,y,n):
+	# 	(val1,X1,stat1) = RPSD_mos(A,y,n)
+	# 	(val2,X2,stat2) = RPSD_cp(A,y,n)
+	# 	print np.linalg.norm(X1-X2,'fro')
+	# 	print val1
+	# 	print val2
 
 	def RSYM(A,y,n):
 
