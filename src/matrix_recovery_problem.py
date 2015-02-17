@@ -11,6 +11,8 @@ import solver
 from lockfile import LockFile
 import time
 import datetime
+from timer import Timer
+from memory_usage import *
 
 class problem_instance:
 	def __init__(self, n, nMC, filename):
@@ -19,30 +21,32 @@ class problem_instance:
 		self.n = n
 		self.nMC = nMC
 		self.filename = filename
-		# target, ensemble, n, r, m, err_1, err_2, time_target, time_ensemble, time_solve
-		self.formatstring = "%s,%s,%d,%d,%d,%f,%f,%f,%f,%f\n"
-
+		# status, target, ensemble, n, r, m, err_1, err_0, time_target, time_ensemble, time_solve, memory_used
+		self.formatstring = "%s,%s,%s,%d,%d,%d,%f,%d,%f,%f,%f,%f\n"
+		
 	def solve_problem(self, m, r, target, meas):
+		timer = Timer()
 		# generate a problem of rank r with m measurements
-		tic = time.time()
+		timer.tic()
 		Xtrue = gen_target.getTargetSample(self.n, r, target)
-		time_target = time.time()-tic
-		tic = time.time()
+		time_target = timer.toc()
+		timer.tic()
 		A = gen_ensemble.getEnsembleSample(m, self.n, meas, target)
 		y = np.dot(A,Xtrue.flatten())
-		time_ensemble = time.time()-tic
-		tic = time.time()
+		time_ensemble = timer.toc()
+		timer.tic()
 		(opt_val, x_opt, status) = self.call_solver(A, y, self.n, target)
-		time_solve = time.time()-tic
+		time_solve = timer.toc()
+		memory_used=memory_usage()
+		status_str="BAD"
 		if( status == cp.OPTIMAL):
-			self.log_output(target, meas,x_opt,Xtrue, r, m,
-time_target,time_ensemble,time_solve)
-		else:
-			print "Issue with solver! not logging..."
+			status_str="OPTIMAL"
+		self.log_output(status_str, target, meas,x_opt,Xtrue, r, m, time_target,time_ensemble,time_solve,memory_used)
+ 
 	def call_solver(self, A, y, n, target):
 		return solver.solve(A, y, n, target)
 
-	def log_output(self, target, meas, x_opt, Xtrue, r, m, t1,t2,t3):
+	def log_output(self, status_str, target, meas, x_opt, Xtrue, r, m, t1,t2,t3,mem_used):
 		# write output to a file
 		# we should use a different file for each trial and then just do
 		# a "reduce".  This way any individual task isn't too long
@@ -59,8 +63,8 @@ time_target,time_ensemble,time_solve)
 		lock.acquire()
 		with open(self.filename, 'a') as my_file:
 			try:
-				my_file.write(self.formatstring % (common.TARGET_NAMES[target],
-common.ENSEMBLE_NAMES[meas], self.n, r, m, err1, err0, t1,t2,t3))
+				my_file.write(self.formatstring % (status_str, common.TARGET_NAMES[target],
+common.ENSEMBLE_NAMES[meas], self.n, r, m, err1, err0, t1,t2,t3,mem_used))
 			except:
 				print "Could not open file!"
 		lock.release()

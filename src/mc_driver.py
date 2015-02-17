@@ -27,6 +27,7 @@ def run_trials(k=3,nMC=10,filename=None):
 	p = Pool()
 	for target in range(len(common.TARGET_NAMES)):
 		for ensemble in range(len(common.ENSEMBLE_NAMES)):
+			#40 iterations of this loop it seems.
 			real_target = (target == common.TARGET_TYPES.RPSD or target == common.TARGET_TYPES.RSYM)
 			complex_measurement = (common.ENSEMBLE_NAMES[ensemble][0] == 'C')
 			if not (real_target and complex_measurement):
@@ -67,4 +68,4 @@ def run_trials(k=3,nMC=10,filename=None):
     	p.join()
 	toc = time.time()-tic
 	print " done."
-	print"Spent %f time waiting for processes"%(toc)
+	print"Spent %f seconds waiting for processes"%(toc)
