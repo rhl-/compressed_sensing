@@ -5,6 +5,7 @@ from   mosek.fusion import *
 import numpy as np
 import cvxopt
 import common
+import cmath
 # CVX algorithm for nuclear norm minimization on square matrices
 # Input:
 # A : the measurement matrix A. Preconditions # rows of A = n^2
@@ -60,9 +61,13 @@ def solve(A,y,n,t):
 
 
 	def HPSD(A,y,n):
+		A1 = np.real(A)
+		A2 = np.imag(A)
+		y1 = np.real(y)
+		y2 = np.imag(y)
 		with Model("HPSD_SOLVE") as M:
 			# W = [Real(X), -Imag(X); Imag(X), Real(X)]
-			U = M.variable(NDSet(n,n), Domain.unbounded())
+			U = M.variable("U", Domain.inPSDCone(n))
 			V = M.variable(NDSet(n,n), Domain.unbounded())
 			obj = Expr.sum(U.diag())
 
@@ -73,7 +78,8 @@ def solve(A,y,n,t):
 
 
 			M.constraint(Expr.vstack(row1,row2), Domain.inPSDCone(2*n))
-
+			# TODO; WHAT IS PSD CONE?  FIXTHIS
+			M.constraint(Expr.sub(V, Variable.transpose(V)),Domain.equalsTo(0.0))
 			(i,j) = np.nonzero(A1)
 			v = A1[i,j]
 			(m,p) = A1.shape
@@ -92,14 +98,18 @@ def solve(A,y,n,t):
 
 			M.solve()
 			try:
-				U1 = np.array(U.level()).reshape(n,n)
-				V1 = np.array(V.level()).reshape(n,n)
-				print np.linalg.norm(V1)
+				U1 = np.matrix(U.level()).reshape(n,n)
+				V1 = np.matrix(V.level()).reshape(n,n)
 
-				x = U1+cmath.sqrt(-1) * V1
-
-				return (2*np.sum(U.diag().level()), x,  cp.OPTIMAL)
+				x = U1+cmath.sqrt(-1.0) * V1
+				obj = 2*np.sum(U.diag().level())
+				# print A*x.reshape(n*n,1)
+				# print y
+				#print np.linalg.norm(A*x.reshape(n*n,1) - y.reshape(m,1))
+				return (obj, x,  cp.OPTIMAL)
 			except:
+
+				print "BAD"
 				return (0, 0, 666)
 
 
