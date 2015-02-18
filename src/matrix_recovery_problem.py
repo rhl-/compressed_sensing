@@ -13,6 +13,7 @@ import time
 import datetime
 from timer import Timer
 from memory_usage import *
+import scipy.io
 
 class problem_instance:
 	def __init__(self, n, nMC, filename):
@@ -42,12 +43,12 @@ class problem_instance:
 		if( status == cp.OPTIMAL):
 			status_str="OPTIMAL"
 
-		self.log_output(status_str, target, meas,x_opt,Xtrue, r, m, time_target,time_ensemble,time_solve,memory_used)
+		self.log_output(status_str, target, meas,x_opt,Xtrue, r, m, time_target,time_ensemble,time_solve,memory_used,A,y)
 
 	def call_solver(self, A, y, n, target):
 		return solver.solve(A, y, n, target)
 
-	def log_output(self, status_str, target, meas, x_opt, Xtrue, r, m, t1,t2,t3,mem_used):
+	def log_output(self, status_str, target, meas, x_opt, Xtrue, r, m, t1,t2,t3,mem_used,A,y):
 		# write output to a file
 		# we should use a different file for each trial and then just do
 		# a "reduce".  This way any individual task isn't too long
@@ -58,10 +59,12 @@ class problem_instance:
 
 		tol = 1e-2
 		err0 = 0
-		if (m > 110):
-			temp = Xtrue - x_opt
-			print temp
-			exit(0)
+		# if (m > 110):
+		# 	print r
+		# 	#temp = Xtrue - x_opt
+		# 	scipy.io.savemat('out.mat', mdict={'true': Xtrue, 'opt' : x_opt, 'A':A, 'y':y})
+		# 	#print temp
+		# 	exit(0)
 		err1 = np.linalg.norm(Xtrue - x_opt,'fro') / np.linalg.norm(Xtrue)
 		if err1 > tol:
 			err0 = 1

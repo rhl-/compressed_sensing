@@ -132,6 +132,7 @@ def solve(A,y,n,t):
 
 			M.constraint(RealPart,Domain.equalsTo(y1))
 			M.constraint(ImagPart,Domain.equalsTo(y2))
+			# M.writeTask("temp.opf")
 
 			M.solve()
 			try:
@@ -169,18 +170,19 @@ def solve(A,y,n,t):
 			Xm_i = M.variable(NDSet(n,n), Domain.unbounded())
 
 			#Skew symmetric on imaginary parts
-			M.constraint(Expr.add(Xp_i, Variable.transpose(Xp_i)),Domain.equalsTo(0.0))
-			M.constraint(Expr.add(Xm_i, Variable.transpose(Xm_i)),Domain.equalsTo(0.0))
+			# M.constraint(Expr.add(Xp_i, Variable.transpose(Xp_i)),Domain.equalsTo(0.0))
+			# M.constraint(Expr.add(Xm_i, Variable.transpose(Xm_i)),Domain.equalsTo(0.0))
 
 			# Trace (Real(Xp) + Real(Xm))
 			obj = Expr.add(Expr.sum(Xp_r.diag()), Expr.sum(Xm_r.diag()))
 			M.objective(ObjectiveSense.Minimize, obj)
 
-
 			ext_Xp_row1 = Expr.hstack(Xp_r,Expr.mul(-1.0,Xp_i))
 			ext_Xp_row2 = Expr.hstack(Xp_i,Xp_r)
 
-			M.constraint(Expr.vstack(ext_Xp_row1,ext_Xp_row2), Domain.inPSDCone(2*n))
+			ext = Expr.vstack(ext_Xp_row1,ext_Xp_row2)
+			print ext
+			M.constraint(ext, Domain.inPSDCone(2*n))
 
 
 			ext_Xm_row1 = Expr.hstack(Xm_r,Expr.mul(-1.0,Xm_i))
@@ -210,7 +212,7 @@ def solve(A,y,n,t):
 
 			M.constraint(RealPart,Domain.equalsTo(y1))
 			M.constraint(ImagPart,Domain.equalsTo(y2))
-			# M.setLogHandler(sys.stdout)
+			#M.setLogHandler(sys.stdout)
 			M.solve()
 			# M.writeTask("temp.opf")
 			# print U.level()
@@ -222,10 +224,10 @@ def solve(A,y,n,t):
 
 				x = Xp_numer-Xm_numer
 				obj = np.sum(Xp_r.diag().level()) + np.sum(Xm_r.diag().level())
-				t = np.matrix(Xp_r.level()).reshape(n,n)
-				U,s,V = np.linalg.svd(t)
-				print s
-				# res = A*x.reshape(n*n,1) - y.reshape(m,1)
+				#t = np.matrix(Xp_r.level()).reshape(n,n)
+				#U,s,V = np.linalg.svd(t)
+				#print s
+				#res = A*x.reshape(n*n,1) - y.reshape(m,1)
 				# print res.shape
 				# print np.linalg.norm(res)
 				# print A*x.reshape(n*n,1)
