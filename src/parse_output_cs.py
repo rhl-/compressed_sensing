@@ -31,6 +31,7 @@ for filename in sys.argv[1:]:
 	fig = plt.figure(1, figsize=(20,20))
 	ax = fig.add_subplot(111)
 
+
 	bp = ax.boxplot(time_plot_data.values(),patch_artist=True)
 	ax.set_xticklabels(time_plot_data.keys())
 	ax.set_ylabel('Time (s)')
@@ -63,7 +64,7 @@ for filename in sys.argv[1:]:
 	fig.savefig(outputfilestem + '_time.pdf', bbox_inches='tight')
 
 
-	fig = plt.figure(1, figsize=(20,20))
+	fig = plt.figure(2, figsize=(20,20))
 	ax = fig.add_subplot(111)
 
 	bp = ax.boxplot(mem_plot_data.values(),patch_artist=True)
