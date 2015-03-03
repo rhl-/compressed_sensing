@@ -26,7 +26,7 @@ def run_trials(k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 	# to sweep over m and r and generate a whole bunch of trials of
 	# each and call solver on those while logging output
 	p = Pool(processes=num_processes)
-	for ensemble in [0]:#xrange(len(common.ENSEMBLE_NAMES)):
+	for ensemble in xrange(len(common.ENSEMBLE_NAMES)):
 		for target in [2,3]:#range(len(common.TARGET_NAMES)):
 			#40 iterations of this loop it seems.
 			real_target = (target == common.TARGET_TYPES.RPSD or target == common.TARGET_TYPES.RSYM)
@@ -59,6 +59,7 @@ def run_trials(k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 					for m in ms:
 						for trial in xrange(nMC):
 							p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
+							#Toggle when debugging.
 							#compute_task(n,nMC,filename,m,r,target,ensemble)
 
 

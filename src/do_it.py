@@ -2,22 +2,8 @@ import mc_driver
 from timer import Timer
 t = Timer()
 
-print "k = 3"
-t.tic()
-mc_driver.run_trials(k=3)
-t.toc()
-
-print "k = 5"
-t.tic()
-mc_driver.run_trials(k=5)
-t.toc()
-
-# print "k = 6"
-# t.tic()
-# mc_driver.run_trials(k=6)
-# t.toc()
-
-# print "k = 7"
-# t.tic()
-# mc_driver.run_trials(k=7)
-# t.toc()
+for i in xrange(3,8):
+	print "k = %s"%(i)
+	t.tic()
+	mc_driver.run_trials(k=i,nMC=3,num_processes=1)
+	t.toc()
