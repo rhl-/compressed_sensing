@@ -18,6 +18,17 @@ import sys
 # X: the CVX solution.
 # val: NaN if the algorithm diverged
 def solve(A,y,n,t):
+	def get_matrix( A):
+	   (m,p) = A.shape
+	   nnz = np.count_nonzero(A)
+	   if( nnz == m*p):
+	   	return DenseMatrix( A)
+	   
+	   (i,j) = np.nonzero(A)
+	   v = A[i,j]
+	   (m,p) = A.shape
+	   B = Matrix.sparse(m,p,i,j,v)
+			
 	# Make mosek environment
 	def RPSD(A,y,n):
 		with Model("RPSD_SOLVE") as M:
@@ -25,17 +36,14 @@ def solve(A,y,n,t):
 			obj = Expr.sum(X.diag())
 			M.objective(ObjectiveSense.Minimize, obj)
 
-			(i,j) = np.nonzero(A)
-			v = A[i,j]
-			(m,p) = A.shape
-			B = Matrix.sparse(m,p,i,j,v)
-
+			B = get_matrix( A)
+	
 			M.constraint(Expr.mul(B,Variable.reshape(X,n*n)),Domain.equalsTo(y))
 
 			M.solve()
 			try:
 				x = np.array(X.level()).reshape(n,n)
-				print np.linalg.norm(x-x.T)
+				#print np.linalg.norm(x-x.T)
 				return (np.sum(X.diag().level()), x,  cp.OPTIMAL)
 			except:
 				return (0, 0, 666)
@@ -50,11 +58,8 @@ def solve(A,y,n,t):
 			obj = Expr.add(Expr.sum(Xp.diag()), Expr.sum(Xm.diag()))
 			M.objective(ObjectiveSense.Minimize, obj)
 
-			(i,j) = np.nonzero(A)
-			v = A[i,j]
-			(m,p) = A.shape
-			B = Matrix.sparse(m,p,i,j,v)
-
+			B = get_matrix( A)
+			
 			#X = Xp - Xm
 			X = Expr.sub(Xp,Xm)
 			M.constraint(Expr.mul(B,Expr.reshape(X,n*n)),Domain.equalsTo(y))
@@ -66,34 +71,6 @@ def solve(A,y,n,t):
 			except:
 				print "BAD"
 				return (0, 0, 666)
-
-
-		# with Model("RSYM_SOLVE") as M:
-		# 	X = M.variable(NDSet( n,n), Domain.unbounded())
-		# 	U = M.variable("U", Domain.inPSDCone( n))
-
-		# 	obj = Expr.sum(U.diag())
-		# 	M.objective(ObjectiveSense.Minimize, obj)
-
-		# 	(i,j) = np.nonzero(A)
-		# 	v = A[i,j]
-		# 	(m,p) = A.shape
-		# 	B = Matrix.sparse(m,p,i,j,v)
-
-		# 	M.constraint(Expr.mul(B,Variable.reshape(X,n*n)),Domain.equalsTo(y))
-
-		# 	BLOCK = Variable.vstack( Variable.hstack(U, X), Variable.hstack(X, U))
-		# 	M.constraint( BLOCK , Domain.inPSDCone( 2*n) )
-
-		# 	M.constraint(Expr.sub(X,Variable.transpose(X)), Domain.equalsTo(0.0))
-
-		# 	M.solve()
-		# 	try:
-		# 		x = np.array(X.level()).reshape(n,n)
-		# 		u = np.array(U.level()).reshape(n,n)
-		# 		return (2*np.sum(U.diag().level()), x,  cp.OPTIMAL)
-		# 	except:
-		# 		return (0, 0, 666)
 
 
 	def HPSD(A,y,n):
@@ -116,7 +93,7 @@ def solve(A,y,n,t):
 			M.constraint(Expr.vstack(row1,row2), Domain.inPSDCone(2*n))
 
 			M.constraint(Expr.add(V, Variable.transpose(V)),Domain.equalsTo(0.0))
-
+		
 			(i,j) = np.nonzero(A1)
 			v = A1[i,j]
 			(m,p) = A1.shape
@@ -181,7 +158,7 @@ def solve(A,y,n,t):
 			ext_Xp_row2 = Expr.hstack(Xp_i,Xp_r)
 
 			ext = Expr.vstack(ext_Xp_row1,ext_Xp_row2)
-			print ext
+			#print ext
 			M.constraint(ext, Domain.inPSDCone(2*n))
 
 
