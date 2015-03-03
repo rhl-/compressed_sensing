@@ -59,13 +59,12 @@ class problem_instance:
 
 		tol = 1e-2
 		err0 = 0
-		# if (m > 110):
-		# 	print r
-		# 	#temp = Xtrue - x_opt
-		# 	scipy.io.savemat('out.mat', mdict={'true': Xtrue, 'opt' : x_opt, 'A':A, 'y':y})
-		# 	#print temp
-		# 	exit(0)
 		err1 = np.linalg.norm(Xtrue - x_opt,'fro') / np.linalg.norm(Xtrue)
+		# if (m > 25):
+  #                    temp = Xtrue - x_opt
+  #                    scipy.io.savemat('out.mat', mdict={'true': Xtrue, 'opt' : x_opt, 'A':A, 'y':y})
+  #                    print temp
+  #                    exit(0)
 		if err1 > tol:
 			err0 = 1
 		lock.acquire()

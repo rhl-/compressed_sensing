@@ -1,5 +1,5 @@
 import mc_driver
-from timer import Timer 
+from timer import Timer
 t = Timer()
 
 print "k = 3"
@@ -12,12 +12,12 @@ t.tic()
 mc_driver.run_trials(k=5)
 t.toc()
 
-print "k = 6"
-t.tic()
-mc_driver.run_trials(k=6)
-t.toc()
+# print "k = 6"
+# t.tic()
+# mc_driver.run_trials(k=6)
+# t.toc()
 
-print "k = 7"
-t.tic()
-mc_driver.run_trials(k=7)
-t.toc()
+# print "k = 7"
+# t.tic()
+# mc_driver.run_trials(k=7)
+# t.toc()
