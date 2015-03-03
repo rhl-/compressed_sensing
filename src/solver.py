@@ -27,8 +27,8 @@ def solve(A,y,n,t):
 	   (i,j) = np.nonzero(A)
 	   v = A[i,j]
 	   (m,p) = A.shape
-	   B = Matrix.sparse(m,p,i,j,v)
-			
+	   return Matrix.sparse(m,p,i,j,v)
+	   			
 	# Make mosek environment
 	def RPSD(A,y,n):
 		with Model("RPSD_SOLVE") as M:
