@@ -6,6 +6,7 @@ from matrix_recovery_problem import *
 import numpy as np # Might not need this
 from numpy.random import randint as randi
 from multiprocessing import Pool
+import multiprocessing as mp
 import time
 import datetime
 import sys
@@ -15,7 +16,7 @@ def compute_task(n,nMC,filename,m,r,target,ensemble):
 	instance = problem_instance(n,nMC,filename)
 	instance.solve_problem(m,r,target,ensemble)
 
-def run_trials(k=3,nMC=10,filename=None):
+def run_trials(k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 	tic = time.time()
 	if(filename == None):
 		date_str=datetime.datetime.now().strftime("%b-%d-%y-%I:%M%p")
@@ -24,9 +25,9 @@ def run_trials(k=3,nMC=10,filename=None):
 	n = 2**k
 	# to sweep over m and r and generate a whole bunch of trials of
 	# each and call solver on those while logging output
-	#p = Pool()
-	for target in [3]:#range(len(common.TARGET_NAMES)):
-		for ensemble in range(len(common.ENSEMBLE_NAMES)):
+	p = Pool(processes=num_processes)
+	for ensemble in [0]:#xrange(len(common.ENSEMBLE_NAMES)):
+		for target in [2,3]:#range(len(common.TARGET_NAMES)):
 			#40 iterations of this loop it seems.
 			real_target = (target == common.TARGET_TYPES.RPSD or target == common.TARGET_TYPES.RSYM)
 			complex_measurement = (common.ENSEMBLE_NAMES[ensemble][0] == 'C')
@@ -57,8 +58,8 @@ def run_trials(k=3,nMC=10,filename=None):
 				for (ms, r) in zip(ms_foreach_r,rs):
 					for m in ms:
 						for trial in xrange(nMC):
-							#p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
-							compute_task(n,nMC,filename,m,r,target,ensemble)
+							p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
+							#compute_task(n,nMC,filename,m,r,target,ensemble)
 
 
 	toc = time.time()-tic
@@ -66,8 +67,8 @@ def run_trials(k=3,nMC=10,filename=None):
 	sys.stdout.write('Waiting...')
 	sys.stdout.flush()
 	tic=time.time()
-	# p.close()
- #    	p.join()
+	p.close()
+     	p.join()
 	toc = time.time()-tic
 	print " done."
 	print"Spent %f seconds waiting for processes"%(toc)

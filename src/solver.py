@@ -19,6 +19,18 @@ import scipy
 # X: the CVX solution.
 # val: NaN if the algorithm diverged
 def solve(A,y,n,t):
+
+	def get_matrix( A):
+	   (m,p) = A.shape
+	   nnz = np.count_nonzero(A)
+	   if( nnz == m*p):
+	   	return DenseMatrix( A)
+
+	   (i,j) = np.nonzero(A)
+	   v = A[i,j]
+	   (m,p) = A.shape
+	   return Matrix.sparse(m,p,i,j,v)
+
 	# Make mosek environment
 	def RPSD(A,y,n):
 		with Model("RPSD_SOLVE") as M:
@@ -88,15 +100,17 @@ def solve(A,y,n,t):
 
 			M.constraint(Expr.add(V, Variable.transpose(V)),Domain.equalsTo(0.0))
 
-			(i,j) = np.nonzero(A1)
-			v = A1[i,j]
-			(m,p) = A1.shape
-			B1 = Matrix.sparse(m,p,i,j,v)
+			B1 = get_matrix(A1)
+			B2 = get_matrix(A2)
+			# (i,j) = np.nonzero(A1)
+			# v = A1[i,j]
+			# (m,p) = A1.shape
+			# B1 = Matrix.sparse(m,p,i,j,v)
 
-			(i,j) = np.nonzero(A2)
-			v = A2[i,j]
-			(m,p) = A2.shape
-			B2 = Matrix.sparse(m,p,i,j,v)
+			# (i,j) = np.nonzero(A2)
+			# v = A2[i,j]
+			# (m,p) = A2.shape
+			# B2 = Matrix.sparse(m,p,i,j,v)
 
 			RealPart = Expr.sub(Expr.mul(B1,Variable.reshape(U,n*n)),Expr.mul(B2,Variable.reshape(V,n*n)))
 			ImagPart = Expr.add(Expr.mul(B1,Variable.reshape(V,n*n)),Expr.mul(B2,Variable.reshape(U,n*n)))
@@ -155,15 +169,17 @@ def solve(A,y,n,t):
 
 
 
-			(i,j) = np.nonzero(A1)
-			v = A1[i,j]
-			(m,p) = A1.shape
-			B1 = Matrix.sparse(m,p,i,j,v)
+			B1 = get_matrix(A1)
+			B2 = get_matrix(A2)
+			# (i,j) = np.nonzero(A1)
+			# v = A1[i,j]
+			# (m,p) = A1.shape
+			# B1 = Matrix.sparse(m,p,i,j,v)
 
-			(i,j) = np.nonzero(A2)
-			v = A2[i,j]
-			(m,p) = A2.shape
-			B2 = Matrix.sparse(m,p,i,j,v)
+			# (i,j) = np.nonzero(A2)
+			# v = A2[i,j]
+			# (m,p) = A2.shape
+			# B2 = Matrix.sparse(m,p,i,j,v)
 
 			RealPart_p = Expr.sub(Expr.mul(B1,Variable.reshape(Xp_r,n*n)),Expr.mul(B2,Variable.reshape(Xp_i,n*n)))
 			RealPart_m = Expr.sub(Expr.mul(B1,Variable.reshape(Xm_r,n*n)),Expr.mul(B2,Variable.reshape(Xm_i,n*n)))
