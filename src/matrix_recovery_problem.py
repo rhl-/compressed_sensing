@@ -22,8 +22,8 @@ class problem_instance:
 		self.n = n
 		self.nMC = nMC
 		self.filename = filename
-		# status, target, ensemble, n, r, m, err_1, err_0, time_target, time_ensemble, time_solve, memory_used
-		self.formatstring = "%s,%s,%s,%d,%d,%d,%f,%d,%f,%f,%f,%f\n"
+		# date, status, target, ensemble, n, r, m, err_1, err_0, time_target, time_ensemble, time_solve, memory_used
+		self.formatstring = "%s, %s,%s,%s,%d,%d,%d,%f,%d,%f,%f,%f,%f\n"
 
 	def solve_problem(self, m, r, target, meas):
 		timer = Timer()
@@ -71,7 +71,8 @@ class problem_instance:
 		lock.acquire()
 		with open(self.filename, 'a') as my_file:
 			try:
-				my_file.write(self.formatstring % (status_str, common.TARGET_NAMES[target],
+				date_str=datetime.datetime.now().strftime("%b-%d-%I:%M%p")
+				my_file.write(self.formatstring % (date_str, status_str, common.TARGET_NAMES[target],
 common.ENSEMBLE_NAMES[meas], self.n, r, m, err1, err0, t1,t2,t3,mem_used))
 			except:
 				print "Could not open file!"
