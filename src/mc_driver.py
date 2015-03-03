@@ -27,7 +27,7 @@ def run_trials(k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 	# each and call solver on those while logging output
 	p = Pool(processes=num_processes)
 	for ensemble in xrange(len(common.ENSEMBLE_NAMES)):
-		for target in [0,1]:#range(len(common.TARGET_NAMES)):
+		for target in range(len(common.TARGET_NAMES)):
 			#40 iterations of this loop it seems.
 			real_target = (target == common.TARGET_TYPES.RPSD or target == common.TARGET_TYPES.RSYM)
 			complex_measurement = (common.ENSEMBLE_NAMES[ensemble][0] == 'C')
