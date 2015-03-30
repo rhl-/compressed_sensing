@@ -48,7 +48,7 @@ def solve(A,y,n,t):
 			M.solve()
 			try:
 				x = np.array(X.level()).reshape(n,n)
-				print np.linalg.norm(x-x.T)
+				#print np.linalg.norm(x-x.T)
 				return (np.sum(X.diag().level()), x,  cp.OPTIMAL)
 			except:
 				return (0, 0, 666)
