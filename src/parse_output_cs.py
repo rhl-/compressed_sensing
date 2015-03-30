@@ -8,7 +8,7 @@ import common
 #print 'Number of arguments:', len(sys.argv), 'arguments.'
 #print 'Argument List:', str(sys.argv)
 ensembles = [common.ENSEMBLE_NAMES[0], common.ENSEMBLE_NAMES[2], common.ENSEMBLE_NAMES[8]]
-targets = [common.TARGET_NAMES[0], common.TARGET_NAMES[1]]
+targets = [common.TARGET_NAMES[2], common.TARGET_NAMES[3]]
 #targets = [common.TARGET_NAMES[0], common.target_names[ 3]]
 mpl.use('agg')
 import matplotlib.pyplot as plt
