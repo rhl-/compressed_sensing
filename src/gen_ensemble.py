@@ -47,6 +47,7 @@ def getEnsembleSample(m, n, meas, target):
 	# Add a sign to the permutation
 	def make_RSPERM():
 		A = make_PERM()
+		# THIS RANDOM CALL IS DENSE AND EXPENSIVE FOR BIG N
 		A[np.where(np.random.rand(m,n**2) > 0.5)] *= -1.0
 		return A
 
