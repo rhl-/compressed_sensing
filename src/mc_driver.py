@@ -19,6 +19,7 @@ def compute_task(n,nMC,filename,m,r,target,ensemble):
 def run_rank_trial(m,n,ranks, ensemble, target, nMC=10):
  	date_str=datetime.datetime.now().strftime("%b-%d-%y-%I:%M%p")
 	filename = "OUTPUT_n_%s_nMc_%s_%s"%(n,nMC,date_str)
+	num_processes=mp.cpu_count()
 	p = Pool(processes=num_processes)
 	for r in ranks:
 		p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble))
