@@ -1,7 +1,7 @@
 # Name:    mc_driver.py
 # Authors: Ryan Lewis & Victor Minden
 # Purpose: A Python module that contains the Monte Carlo driver for the main experiment.
-import cvxpy as cp
+#import cvxpy as cp
 import common
 import gen_ensemble
 import gen_target
@@ -13,12 +13,12 @@ import time
 import datetime
 from timer import Timer
 from memory_usage import *
-import scipy.io
+#import scipy.io
 
 class problem_instance:
 	def __init__(self, n, nMC, filename):
 		#TODO: Random seeds are perhaps better than victors birthday.
-		np.random.seed(12181990)
+		#np.random.seed(12181990)
 		self.n = n
 		self.nMC = nMC
 		self.filename = filename
@@ -40,7 +40,7 @@ class problem_instance:
 		time_solve = timer.toc()
 		memory_used=memory_usage()
 		status_str="BAD"
-		if( status == cp.OPTIMAL):
+		if( status == 0):#cp.OPTIMAL):
 			status_str="OPTIMAL"
 
 		self.log_output(status_str, target, meas,x_opt,Xtrue, r, m, time_target,time_ensemble,time_solve,memory_used,A,y)

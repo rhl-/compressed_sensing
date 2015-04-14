@@ -14,16 +14,19 @@ import sys
 def compute_task(n,nMC,filename,m,r,target,ensemble):
 	#TODO: This can instead go ahead and call out for this..
 	instance = problem_instance(n,nMC,filename)
-	instance.solve_problem(m,r,target,ensemble)
+	for i in range(nMC):
+		instance.solve_problem(m,r,target,ensemble)
 
 def run_rank_trial(m,n,ranks, ensemble, target, nMC=10):
  	date_str=datetime.datetime.now().strftime("%b-%d-%y-%I:%M%p")
 	filename = "OUTPUT_n_%s_nMc_%s_%s"%(n,nMC,date_str)
-	num_processes=mp.cpu_count()
-	p = Pool(processes=num_processes)
+	#num_processes=6#mp.cpu_count()
+	#p = Pool(processes=num_processes)
 	for r in ranks:
-		p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble))
-	
+		compute_task(n,nMC,filename,m,r,target,ensemble)
+		#p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble))
+	#p.close()
+	#p.join()
 def run_trial(m,n,r, ensemble, target, nMC=10):
  	date_str=datetime.datetime.now().strftime("%b-%d-%y-%I:%M%p")
 	filename = "OUTPUT_n_%s_nMc_%s_%s"%(n,nMC,date_str)

@@ -1,13 +1,13 @@
-import cvxpy as cp
+#import cvxpy as cp
 import mosek
 import mosek.fusion
 from   mosek.fusion import *
 import numpy as np
-import cvxopt
+#import cvxopt
 import common
 import cmath
 import sys
-import scipy
+#import scipy
 # CVX algorithm for nuclear norm minimization on square matrices
 # Input:
 # A : the measurement matrix A. Preconditions # rows of A = n^2
@@ -49,7 +49,7 @@ def solve(A,y,n,t):
 			try:
 				x = np.array(X.level()).reshape(n,n)
 				#print np.linalg.norm(x-x.T)
-				return (np.sum(X.diag().level()), x,  cp.OPTIMAL)
+				return (np.sum(X.diag().level()), x,  0)#cp.OPTIMAL)
 			except:
 				return (0, 0, 666)
 
@@ -75,7 +75,7 @@ def solve(A,y,n,t):
 			M.solve()
 			try:
 				x = np.array(Xp.level()).reshape(n,n) - np.array(Xm.level()).reshape(n,n)
-				return (np.sum(Xp.diag().level()) + np.sum(Xm.diag().level()), x,  cp.OPTIMAL)
+				return (np.sum(Xp.diag().level()) + np.sum(Xm.diag().level()), x,  0)#cp.OPTIMAL)
 			except:
 				print "BAD"
 				return (0, 0, 666)
@@ -135,7 +135,7 @@ def solve(A,y,n,t):
 				# print A*x.reshape(n*n,1)
 				# print y
 				#print np.linalg.norm(A*x.reshape(n*n,1) - y.reshape(m,1))
-				return (obj, x,  cp.OPTIMAL)
+				return (obj, x,  0)#cp.OPTIMAL)
 			except:
 
 				print "BAD"
@@ -204,7 +204,7 @@ def solve(A,y,n,t):
 				obj = np.sum(Xp_r.diag().level()) + np.sum(Xm_r.diag().level())
 
 				#print np.linalg.norm(A*x.reshape(n*n,1) - y.reshape(m,1))
-				return (obj, x,  cp.OPTIMAL)
+				return (obj, x,  0)#cp.OPTIMAL)
 			except:
 				print "BAD"
 				return (0, 0, 666)
