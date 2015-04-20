@@ -37,11 +37,11 @@ def run_trials(ms,k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 	if(filename == None):
 		date_str=datetime.datetime.now().strftime("%b-%d-%y-%I:%M%p")
 		filename = "OUTPUT_n_%s_nMc_%s_%s"%(2**k,nMC,date_str)
-	np.random.seed(12181990)
+#	np.random.seed(12181990)
 	n = 2**k
 	# to sweep over m and r and generate a whole bunch of trials of
 	# each and call solver on those while logging output
-	p = Pool(processes=num_processes)
+	#p = Pool(processes=num_processes)
 	for ensemble in xrange(len(common.ENSEMBLE_NAMES)):
 		for target in xrange(len(common.TARGET_NAMES)):
 			#40 iterations of this loop it seems.
@@ -54,6 +54,8 @@ def run_trials(ms,k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 				else:
 					l = 6
 				rs = range(1,6,1) + randi(l,n/4,5).tolist() + randi(n/4+1,n/2,5).tolist() + randi(n/2+1,n,5).tolist()
+				if n == 64:
+					rs = range(1,15,1) + randi(15,25,5).tolist() + randi(25,35,5).tolist() + randi(35,45,5).tolist() + randi(45,55,5).tolist() + randi(55,62,5).tolist()
 				#print rs
 #
 #				# # First, calculate upper bound on number of measurements
@@ -75,17 +77,17 @@ def run_trials(ms,k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 				for m in ms:
 					for r in rs:
 						for trial in xrange(nMC):
-							p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
-							#compute_task(n,nMC,filename,m,r,target,ensemble)
+							#p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
+							compute_task(n,nMC,filename,m,r,target,ensemble)
+							
 
-
-	toc = time.time()-tic
-	print "Queued all jobs \t %f"%(toc)
-	sys.stdout.write('Waiting...')
-	sys.stdout.flush()
-	tic=time.time()
-	p.close()
-     	p.join()
-	toc = time.time()-tic
-	print " done."
-	print"Spent %f seconds waiting for processes"%(toc)
+	#toc = time.time()-tic
+	#print "Queued all jobs \t %f"%(toc)
+	#sys.stdout.write('Waiting...')
+	#sys.stdout.flush()
+	#tic=time.time()
+	#p.close()
+     	#p.join()
+	#toc = time.time()-tic
+	#print " done."
+	#print"Spent %f seconds waiting for processes"%(toc)
