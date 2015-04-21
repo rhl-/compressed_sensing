@@ -5,7 +5,7 @@ t = Timer()
 
 #ensemble, target, nmc, RPSD, RDIRAC
 #mc_driver.run_rank_trial(m=1024,n=64,ranks=xrange(5,16),ensemble=0,target=0,nMC=25)
-mc_driver.run_trials(ms=range(100,4001,200),k=6,nMC=20)
+mc_driver.run_trials(ms=range(100,(64**2/2 + 64/2),200),k=6,nMC=20)
 #print "k = 5"
 #t.tic()
 #mc_driver.run_trials([(32**2)/8],k=5)

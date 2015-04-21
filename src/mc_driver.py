@@ -5,8 +5,8 @@ import common
 from matrix_recovery_problem import *
 import numpy as np # Might not need this
 from numpy.random import randint as randi
-from multiprocessing import Pool
-import multiprocessing as mp
+#from multiprocessing import Pool
+#import multiprocessing as mp
 import time
 import datetime
 import sys
@@ -14,7 +14,9 @@ import sys
 def compute_task(n,nMC,filename,m,r,target,ensemble):
 	#TODO: This can instead go ahead and call out for this..
 	instance = problem_instance(n,nMC,filename)
+	print "Making a problem with parameters (%d,%d,%d,%d,%d,%d)" % (n,m,r,nMC,target,ensemble)
 	for i in range(nMC):
+		print "Trial %d start" % (i)
 		instance.solve_problem(m,r,target,ensemble)
 
 def run_rank_trial(m,n,ranks, ensemble, target, nMC=10):
@@ -32,7 +34,7 @@ def run_trial(m,n,r, ensemble, target, nMC=10):
 	filename = "OUTPUT_n_%s_nMc_%s_%s"%(n,nMC,date_str)
 	compute_task(n,nMC,filename,m,r,target,ensemble)
 
-def run_trials(ms,k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
+def run_trials(ms,k=3,nMC=10,filename=None):#num_processes=mp.cpu_count(),filename=None):
 	tic = time.time()
 	if(filename == None):
 		date_str=datetime.datetime.now().strftime("%b-%d-%y-%I:%M%p")
@@ -56,7 +58,7 @@ def run_trials(ms,k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 				rs = range(1,6,1) + randi(l,n/4,5).tolist() + randi(n/4+1,n/2,5).tolist() + randi(n/2+1,n,5).tolist()
 				if n == 64:
 					rs = range(1,15,1) + randi(15,25,5).tolist() + randi(25,35,5).tolist() + randi(35,45,5).tolist() + randi(45,55,5).tolist() + randi(55,62,5).tolist()
-				#print rs
+				print rs
 #
 #				# # First, calculate upper bound on number of measurements
 #				# is_entry = (ensemble == common.ENSEMBLE_TYPES.ENTRY )
@@ -76,7 +78,6 @@ def run_trials(ms,k=3,nMC=10,num_processes=mp.cpu_count(),filename=None):
 #				for (ms, r) in zip(ms_foreach_r,rs):
 				for m in ms:
 					for r in rs:
-						for trial in xrange(nMC):
 							#p.apply_async(compute_task, args=(n,nMC,filename,m,r,target,ensemble,))
 							compute_task(n,nMC,filename,m,r,target,ensemble)
 							
