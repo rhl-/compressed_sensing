@@ -44,8 +44,9 @@ def solve(A,y,n,t):
 			B = Matrix.sparse(m,p,i,j,v)
 
 			M.constraint(Expr.mul(B,Variable.reshape(X,n*n)),Domain.equalsTo(y))
-
+			print "Just before solve"
 			M.solve()
+			print "Just after solve"
 			try:
 				x = np.array(X.level()).reshape(n,n)
 				#print np.linalg.norm(x-x.T)

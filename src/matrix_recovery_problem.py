@@ -35,9 +35,11 @@ class problem_instance:
 		A = gen_ensemble.getEnsembleSample(m, self.n, meas, target)
 		y = np.dot(A,Xtrue.flatten())
 		time_ensemble = timer.toc()
+		print "Calling solver"
 		timer.tic()
 		(opt_val, x_opt, status) = self.call_solver(A, y, self.n, target)
 		time_solve = timer.toc()
+		print "Out of solver"
 		memory_used=memory_usage()
 		status_str="BAD"
 		if( status == 0):#cp.OPTIMAL):
